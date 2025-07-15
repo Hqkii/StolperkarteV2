@@ -1,0 +1,44 @@
+html, body { height: 100%; margin: 0; }
+#map { height: 100%; }
+
+/* Cluster-Viereck */
+.stoneSquare {
+  width: 46px;
+  height: 46px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: 600;
+  color: #000;
+  background: #C4A000;
+  border: 2px solid #444;
+  border-radius: 4px;
+  font-size: 18px;
+  user-select: none;
+}
+
+/* Popup */
+.leaflet-popup-content-wrapper {
+  background: #fffff0;
+  color: #111;
+  border: 1px solid #C4A000;
+}
+.leaflet-popup-tip {
+  background: #C4A000;
+}
+
+/* Legende */
+.legend {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  background: #fffff0;
+  border: 1px solid #C4A000;
+  padding: 4px 6px;
+  font-size: 12px;
+  z-index: 999;
+}
+a {
+  color: #C4A000;
+  text-decoration: none;
+}
