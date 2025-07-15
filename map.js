@@ -59,28 +59,70 @@ function loadOverpass() {
         const victimType = t["memorial:victim_of"] || '';
         const info = t["memorial:info"] || '';
 
-        // Suche in stolperJson nach passendem Namen
-        let jsonEintrag = stolperJson.find(j =>
-          j.name && name && j.name.trim().toLowerCase() === name.trim().toLowerCase()
-        );
+        // Suche in stolperJson nach passendem Namen (ggf. auch ohne "Dr. " vergleichen)
+        let jsonEintrag = stolperJson.find(j => {
+          if (!j.name || !name) return false;
+          // Vergleich exakt oder, wenn "Dr." im Namen, auch ohne "Dr. " am Anfang
+          const nameNorm = name.trim().toLowerCase();
+          const jNameNorm = j.name.trim().toLowerCase();
+          if (nameNorm === jNameNorm) return true;
+          if (
+            nameNorm.replace(/^dr\.?\s*/i, '') === jNameNorm.replace(/^dr\.?\s*/i, '')
+          ) return true;
+          return false;
+        });
 
-        // Popup-Text: OSM/Overpass + ggf. Zusatzinfos aus JSON
-        let popupText = `<strong>${name}</strong><br>`;
-        if (address) popupText += `${address}<br>`;
-        if (birth) popupText += `Geboren: ${birth}<br>`;
-        if (death) popupText += `Gestorben: ${death}<br>`;
-        if (victimType) popupText += `Opfer: ${victimType}<br>`;
-        if (info) popupText += `<em>${info}</em><br>`;
+        // Popup-Text: Schönes Layout mit Beschreibung für Titelpersonen
+        let popupText = `<div class="popup-content">`;
 
-        if (jsonEintrag) {
-          if (jsonEintrag.adresse && jsonEintrag.adresse !== address) popupText += `Adresse: ${jsonEintrag.adresse}<br>`;
-          if (jsonEintrag.info && jsonEintrag.info !== info) popupText += `<em>${jsonEintrag.info}</em><br>`;
-          if (jsonEintrag.anmerkung) popupText += `${jsonEintrag.anmerkung}<br>`;
-          if (jsonEintrag.quelle) popupText += `<a href="${jsonEintrag.quelle}" target="_blank">Quelle</a>`;
+        // Titel + Beschreibung
+        if (name) {
+          popupText += `<div class="popup-title">${name}</div>`;
+          // Beschreibung aus info oder Zusatzinfo, falls vorhanden
+          let beschreibung = '';
+          // Priorität: JSON-info, dann OSM-info
+          if (jsonEintrag && jsonEintrag.info) {
+            beschreibung = jsonEintrag.info;
+          }
+          if (!beschreibung && info) {
+            beschreibung = info;
+          }
+          // Beschreibung IMMER zeigen, falls vorhanden!
+          if (beschreibung) {
+            popupText += `<div class="popup-description">${beschreibung}</div>`;
+          }
         }
 
+        // Adresse
+        if (address) popupText += `<div><strong>Adresse:</strong> ${address}</div>`;
+        if (jsonEintrag && jsonEintrag.adresse && jsonEintrag.adresse !== address) {
+          popupText += `<div><strong>Adresse :</strong> ${jsonEintrag.adresse}</div>`;
+        }
+
+        // Geburts- und Todesdaten
+        if (birth || death) {
+          popupText += `<div>`;
+          if (birth) popupText += `<span><strong>Geboren:</strong> ${birth}</span>`;
+          if (birth && death) popupText += ' • ';
+          if (death) popupText += `<span><strong>Gestorben:</strong> ${death}</span>`;
+          popupText += `</div>`;
+        }
+
+        // Opfergruppe
+        if (victimType) popupText += `<div><strong>Opfergruppe:</strong> ${victimType}</div>`;
+
+        // Anmerkung
+        if (jsonEintrag && jsonEintrag.anmerkung) popupText += `<div class="popup-note">${jsonEintrag.anmerkung}</div>`;
+
+        // Quelle
+        if (jsonEintrag && jsonEintrag.quelle) {
+          popupText += `<div class="popup-source"><a href="${jsonEintrag.quelle}" target="_blank">Quelle</a></div>`;
+        }
+
+        popupText += `</div>`;
+
         L.marker([el.lat, el.lon], { icon: redPin })
-          .bindPopup(popupText, { maxWidth: 250 })
+          .bindPopup(popupText, { maxWidth: 320 })
           .addTo(cluster);
       });
     });

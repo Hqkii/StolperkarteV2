@@ -17,7 +17,36 @@ html, body { height: 100%; margin: 0; }
   user-select: none;
 }
 
-/* Popup */
+/* Popup Styling verbessert */
+.popup-content {
+  font-family: system-ui, sans-serif;
+  background: #fffff7;
+  padding: 2px 0;
+  font-size: 15px;
+  line-height: 1.5;
+}
+.popup-title {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 2px;
+  color: #a80000;
+}
+.popup-description {
+  margin-bottom: 5px;
+  font-style: italic;
+  color: #333;
+}
+.popup-note {
+  margin-top: 4px;
+  font-size: 13px;
+  color: #666;
+}
+.popup-source {
+  margin-top: 4px;
+  font-size: 12px;
+}
+
+/* Leaflet Popup */
 .leaflet-popup-content-wrapper {
   background: #fffff0;
   color: #111;
