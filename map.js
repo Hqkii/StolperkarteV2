@@ -30,6 +30,20 @@ const redPin = L.divIcon({
   popupAnchor: [0, -36]
 });
 
+// Hilfsfunktion für Namensvergleich: entfernt Titel, "geb.", "verh." und Klammern
+function normalizeName(name) {
+  return name
+    ? name
+        .toLowerCase()
+        .replace(/^dr\.?\s*/i, '')         // "Dr." am Anfang entfernen
+        .replace(/\bgeb\..*$/i, '')       // alles ab "geb." entfernen
+        .replace(/\bverh\..*$/i, '')      // alles ab "verh." entfernen
+        .replace(/\([^)]*\)/g, '')        // Klammern entfernen
+        .replace(/\s+/g, ' ')             // mehrfache Leerzeichen zu einem
+        .trim()
+    : '';
+}
+
 // 1. Lade JSON mit Zusatzinfos
 let stolperJson = [];
 fetch('stolpersteine.json')
@@ -59,17 +73,10 @@ function loadOverpass() {
         const victimType = t["memorial:victim_of"] || '';
         const info = t["memorial:info"] || '';
 
-        // Suche in stolperJson nach passendem Namen (ggf. auch ohne "Dr. " vergleichen)
+        // Suche in stolperJson nach passendem Namen (tolerant gegenüber "Dr.", "geb.", "verh.", Klammern)
         let jsonEintrag = stolperJson.find(j => {
           if (!j.name || !name) return false;
-          // Vergleich exakt oder, wenn "Dr." im Namen, auch ohne "Dr. " am Anfang
-          const nameNorm = name.trim().toLowerCase();
-          const jNameNorm = j.name.trim().toLowerCase();
-          if (nameNorm === jNameNorm) return true;
-          if (
-            nameNorm.replace(/^dr\.?\s*/i, '') === jNameNorm.replace(/^dr\.?\s*/i, '')
-          ) return true;
-          return false;
+          return normalizeName(j.name) === normalizeName(name);
         });
 
         // Popup-Text: Schönes Layout mit Beschreibung für Titelpersonen
