@@ -6,15 +6,120 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
   <link rel="stylesheet" href="style.css" />
+  <style>
+    body, html {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, sans-serif;
+      background: #faf8ef;
+      min-height: 100vh;
+    }
+    .intro-container {
+      position: absolute;
+      z-index: 2000;
+      top: 0; left: 0; width: 100vw; height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255,255,240,0.92);
+    }
+    .intro-content {
+      text-align: center;
+      background: #fffff0;
+      border: 1px solid #C4A000;
+      border-radius: 10px;
+      padding: 40px 24px 32px 24px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.07);
+      max-width: 420px;
+    }
+    .intro-content h1 {
+      color: #a80000;
+      margin-bottom: 16px;
+      font-size: 2em;
+    }
+    .intro-content p {
+      color: #333;
+      margin-bottom: 28px;
+      font-size: 1.15em;
+      line-height: 1.5;
+    }
+    .intro-content button {
+      font-size: 1.15em;
+      background: #C4A000;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      padding: 14px 38px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background 0.18s;
+    }
+    .intro-content button:hover {
+      background: #a87d00;
+    }
+    #map {
+      height: 100vh;
+      width: 100vw;
+      display: block;
+    }
+    .legend {
+      position: absolute;
+      bottom: 8px;
+      right: 8px;
+      background: #fffff0;
+      border: 1px solid #C4A000;
+      padding: 4px 6px;
+      font-size: 12px;
+      z-index: 999;
+    }
+    a {
+      color: #C4A000;
+      text-decoration: none;
+    }
+  </style>
 </head>
 <body>
-  <div id="map"></div>
-  <div class="legend">
+  <div class="intro-container" id="intro">
+    <div class="intro-content">
+      <h1>Stolpersteine Hamburg</h1>
+      <p>
+        Entdecke die Standorte und Geschichten der Stolpersteine in Hamburg.<br>
+        Ein digitales Gedenken an die Opfer des Nationalsozialismus.
+      </p>
+      <button onclick="showMap()">Zur Karte</button>
+    </div>
+  </div>
+  <div id="map" style="display:none"></div>
+  <div class="legend" style="display:none" id="legend">
     © OpenStreetMap / OverpassAPI & eigene Daten<br />
     <a href="https://de.wikipedia.org/wiki/Liste_der_Stolpersteine_in_Hamburg" target="_blank">Wikipedia-Liste</a>
   </div>
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
-  <script src="map.js"></script>
+  <script>
+    function showMap() {
+      document.getElementById('intro').style.display = 'none';
+      document.getElementById('map').style.display = '';
+      document.getElementById('legend').style.display = '';
+      // Map initialisieren, falls noch nicht geschehen
+      if (!window._mapLoaded) {
+        window._mapLoaded = true;
+        // Leaflet und MarkerCluster laden
+        var leaflet = document.createElement('script');
+        leaflet.src = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.js";
+        leaflet.onload = function() {
+          var cluster = document.createElement('script');
+          cluster.src = "https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js";
+          cluster.onload = function() {
+            var mapjs = document.createElement('script');
+            mapjs.src = "map.js";
+            document.body.appendChild(mapjs);
+          };
+          document.body.appendChild(cluster);
+        };
+        document.body.appendChild(leaflet);
+      }
+    }
+  </script>
 </body>
 </html>
