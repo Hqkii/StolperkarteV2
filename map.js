@@ -1,5 +1,7 @@
 // Initialisiere Karte
 const map = L.map('map').setView([53.55, 9.99], 11);
+window.map = map; // Für search.js
+
 L.tileLayer(
   'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',
   { attribution: '© OSM, Carto', maxZoom: 18 }
@@ -17,6 +19,7 @@ const cluster = L.markerClusterGroup({
   }),
 });
 map.addLayer(cluster);
+window.cluster = cluster; // Damit die Suchfunktion Cluster öffnen kann!
 
 // Rotes Stecknadel-Icon als SVG
 const redPin = L.divIcon({
@@ -35,17 +38,18 @@ function normalizeName(name) {
   return name
     ? name
         .toLowerCase()
-        .replace(/^dr\.?\s*/i, '')         // "Dr." am Anfang entfernen
-        .replace(/\bgeb\..*$/i, '')       // alles ab "geb." entfernen
-        .replace(/\bverh\..*$/i, '')      // alles ab "verh." entfernen
-        .replace(/\([^)]*\)/g, '')        // Klammern entfernen
-        .replace(/\s+/g, ' ')             // mehrfache Leerzeichen zu einem
+        .replace(/^dr\.?\s*/i, '')
+        .replace(/\bgeb\..*$/i, '')
+        .replace(/\bverh\..*$/i, '')
+        .replace(/\([^)]*\)/g, '')
+        .replace(/\s+/g, ' ')
         .trim()
     : '';
 }
 
 // 1. Lade JSON mit Zusatzinfos
 let stolperJson = [];
+let allSearchMarkers = [];
 fetch('stolpersteine.json')
   .then(r => r.json())
   .then(data => { stolperJson = data; })
@@ -79,58 +83,47 @@ function loadOverpass() {
           return normalizeName(j.name) === normalizeName(name);
         });
 
-        // Popup-Text: Schönes Layout mit Beschreibung für Titelpersonen
+        // Popup-Text: EXAKT wie im Screenshot
         let popupText = `<div class="popup-content">`;
 
-        // Titel + Beschreibung
         if (name) {
           popupText += `<div class="popup-title">${name}</div>`;
-          // Beschreibung aus info oder Zusatzinfo, falls vorhanden
           let beschreibung = '';
-          // Priorität: JSON-info, dann OSM-info
-          if (jsonEintrag && jsonEintrag.info) {
-            beschreibung = jsonEintrag.info;
-          }
-          if (!beschreibung && info) {
-            beschreibung = info;
-          }
-          // Beschreibung IMMER zeigen, falls vorhanden!
+          if (jsonEintrag && jsonEintrag.info) beschreibung = jsonEintrag.info;
+          if (!beschreibung && info) beschreibung = info;
           if (beschreibung) {
             popupText += `<div class="popup-description">${beschreibung}</div>`;
           }
         }
-
-        // Adresse
-        if (address) popupText += `<div><strong>Adresse:</strong> ${address}</div>`;
-        if (jsonEintrag && jsonEintrag.adresse && jsonEintrag.adresse !== address) {
-          popupText += `<div><strong>Adresse :</strong> ${jsonEintrag.adresse}</div>`;
+        if (jsonEintrag && jsonEintrag.adresse) {
+          popupText += `<div class="popup-address">Adresse : ${jsonEintrag.adresse}</div>`;
+        } else if (address) {
+          popupText += `<div class="popup-address">Adresse : ${address}</div>`;
         }
-
-        // Geburts- und Todesdaten
-        if (birth || death) {
-          popupText += `<div>`;
-          if (birth) popupText += `<span><strong>Geboren:</strong> ${birth}</span>`;
-          if (birth && death) popupText += ' • ';
-          if (death) popupText += `<span><strong>Gestorben:</strong> ${death}</span>`;
-          popupText += `</div>`;
-        }
-
-        // Opfergruppe
-        if (victimType) popupText += `<div><strong>Opfergruppe:</strong> ${victimType}</div>`;
-
-        // Anmerkung
-        if (jsonEintrag && jsonEintrag.anmerkung) popupText += `<div class="popup-note">${jsonEintrag.anmerkung}</div>`;
-
-        // Quelle
-        if (jsonEintrag && jsonEintrag.quelle) {
+        if (jsonEintrag && jsonEintrag.anmerkung)
+          popupText += `<div class="popup-note">${jsonEintrag.anmerkung}</div>`;
+        if (jsonEintrag && jsonEintrag.quelle)
           popupText += `<div class="popup-source"><a href="${jsonEintrag.quelle}" target="_blank">Quelle</a></div>`;
-        }
-
         popupText += `</div>`;
 
-        L.marker([el.lat, el.lon], { icon: redPin })
-          .bindPopup(popupText, { maxWidth: 320 })
+        const marker = L.marker([el.lat, el.lon], { icon: redPin })
+          .bindPopup(popupText, { maxWidth: 370 })
           .addTo(cluster);
+
+        // Für Suchfunktion
+        allSearchMarkers.push({
+          name: name,
+          address: jsonEintrag && jsonEintrag.adresse ? jsonEintrag.adresse : address,
+          marker: marker,
+          lat: el.lat,
+          lon: el.lon,
+          info: (jsonEintrag && jsonEintrag.info) || info || "",
+        });
       });
+
+      window.getAllMarkers = function () {
+        return allSearchMarkers;
+      };
+      window.leafletMapReady = true;
     });
 }

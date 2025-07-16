@@ -78,6 +78,79 @@
       color: #C4A000;
       text-decoration: none;
     }
+    /* Suchleiste Styling */
+    .search-bar-container {
+      position: absolute;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 1200;
+      background: #fffff0e8;
+      border: 1px solid #C4A000;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      padding: 10px 18px;
+      display: flex;
+      align-items: center;
+      min-width: 280px;
+      max-width: 94vw;
+      width: 370px;
+      gap: 8px;
+      display: none;
+    }
+    .search-bar-container.active { display: flex; }
+    .search-bar-input {
+      flex: 1;
+      font-size: 1em;
+      padding: 6px 10px;
+      border: 1px solid #C4A000;
+      border-radius: 5px;
+      outline: none;
+      background: #fff;
+    }
+    .search-bar-btn {
+      background: #C4A000;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      padding: 7px 18px;
+      font-size: 1em;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.18s;
+    }
+    .search-bar-btn:hover {
+      background: #a87d00;
+    }
+    .search-bar-results {
+      position: absolute;
+      top: 46px;
+      left: 0;
+      right: 0;
+      background: #fffffa;
+      border: 1px solid #ccc;
+      border-top: none;
+      border-radius: 0 0 8px 8px;
+      max-height: 210px;
+      overflow-y: auto;
+      z-index: 1201;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.07);
+      display: none;
+      font-size: 1em;
+    }
+    .search-bar-results.active { display: block; }
+    .search-bar-result {
+      padding: 8px 14px;
+      cursor: pointer;
+      border-bottom: 1px solid #eee;
+    }
+    .search-bar-result:last-child {
+      border-bottom: none;
+    }
+    .search-bar-result:hover,
+    .search-bar-result.active {
+      background: #ffe9b0;
+    }
   </style>
 </head>
 <body>
@@ -91,6 +164,20 @@
       <button onclick="showMap()">Zur Karte</button>
     </div>
   </div>
+  <!-- Suchleiste -->
+  <div class="search-bar-container" id="searchBar">
+    <input
+      class="search-bar-input"
+      id="searchInput"
+      type="text"
+      placeholder="Name suchen (z. B. Rosentreter)"
+      autocomplete="off"
+      oninput="window.searchResultsUpdate && window.searchResultsUpdate()"
+      onkeydown="window.searchBarKeyDown && window.searchBarKeyDown(event)"
+    />
+    <button class="search-bar-btn" onclick="window.searchBarSubmit && window.searchBarSubmit()">Suchen</button>
+    <div class="search-bar-results" id="searchResults"></div>
+  </div>
   <div id="map" style="display:none"></div>
   <div class="legend" style="display:none" id="legend">
     © OpenStreetMap / OverpassAPI & eigene Daten<br />
@@ -101,6 +188,7 @@
       document.getElementById('intro').style.display = 'none';
       document.getElementById('map').style.display = '';
       document.getElementById('legend').style.display = '';
+      document.getElementById('searchBar').classList.add('active');
       // Map initialisieren, falls noch nicht geschehen
       if (!window._mapLoaded) {
         window._mapLoaded = true;
@@ -121,5 +209,6 @@
       }
     }
   </script>
+  <script src="search.js"></script>
 </body>
 </html>
