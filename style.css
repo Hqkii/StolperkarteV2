@@ -1,7 +1,218 @@
 html, body { height: 100%; margin: 0; }
 #map { height: 100%; }
 
-/* Suchleiste EXAKT wie Bild 3 */
+/* Info-Button */
+.info-button {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: #C4A000;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 24px;
+  font-size: 1.1em;
+  font-weight: bold;
+  cursor: pointer;
+  z-index: 1300;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  transition: background 0.18s;
+}
+.info-button:hover {
+  background: #a87d00;
+}
+
+/* Info-Overlay */
+.info-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0,0,0,0.7);
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.info-panel {
+  background: #fff;
+  border: 3px solid #C4A000;
+  border-radius: 12px;
+  padding: 30px;
+  max-width: 700px;
+  max-height: 80vh;
+  overflow-y: auto;
+  position: relative;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.2);
+}
+.info-panel h2 {
+  color: #a80000;
+  margin-top: 0;
+  margin-bottom: 20px;
+}
+.info-tabs {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  border-bottom: 2px solid #C4A000;
+}
+.info-tab {
+  background: #f5f5f5;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  font-size: 1em;
+  font-weight: bold;
+  border-radius: 8px 8px 0 0;
+  transition: background 0.18s;
+}
+.info-tab.active {
+  background: #C4A000;
+  color: #fff;
+}
+.info-tab:hover {
+  background: #e0c060;
+}
+.info-content {
+  display: none;
+}
+.info-content.active {
+  display: block;
+}
+.info-content p {
+  line-height: 1.6;
+  margin-bottom: 15px;
+}
+.close-info {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: #d00;
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 35px;
+  height: 35px;
+  font-size: 1.5em;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+/* Putz-Formular Overlay */
+.cleaning-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0,0,0,0.7);
+  z-index: 3000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.cleaning-form {
+  background: #fff;
+  border: 3px solid #C4A000;
+  border-radius: 12px;
+  padding: 30px;
+  max-width: 450px;
+  width: 90%;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.2);
+}
+.cleaning-form h3 {
+  color: #a80000;
+  margin-top: 0;
+  margin-bottom: 20px;
+}
+.cleaning-form label {
+  display: block;
+  margin-top: 15px;
+  margin-bottom: 5px;
+  font-weight: bold;
+  color: #333;
+}
+.cleaning-form input[type="date"],
+.cleaning-form textarea,
+.cleaning-form input[type="file"] {
+  width: 100%;
+  padding: 10px;
+  border: 2px solid #C4A000;
+  border-radius: 6px;
+  font-size: 1em;
+  font-family: inherit;
+  box-sizing: border-box;
+}
+.cleaning-form textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+.cleaning-buttons {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+.btn-save, .btn-cancel {
+  flex: 1;
+  padding: 12px;
+  font-size: 1.1em;
+  font-weight: bold;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.18s;
+}
+.btn-save {
+  background: #0a0;
+  color: #fff;
+}
+.btn-save:hover {
+  background: #080;
+}
+.btn-cancel {
+  background: #999;
+  color: #fff;
+}
+.btn-cancel:hover {
+  background: #777;
+}
+
+/* Putz-Button im Popup */
+.btn-clean {
+  width: 100%;
+  background: #0a0;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 12px;
+  font-size: 1.1em;
+  font-weight: bold;
+  cursor: pointer;
+  margin: 10px 0;
+  transition: background 0.18s;
+}
+.btn-clean:hover {
+  background: #080;
+}
+
+/* Putz-Info im Popup */
+.cleaning-info {
+  background: #f0f8ff;
+  border: 2px solid #0a0;
+  border-radius: 6px;
+  padding: 10px;
+  margin: 10px 0;
+  font-size: 0.95em;
+}
+.cleaning-image {
+  max-width: 100%;
+  border-radius: 6px;
+  margin-top: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+/* Suchleiste */
 .search-bar-container {
   position: absolute;
   top: 20px;
@@ -80,7 +291,7 @@ html, body { height: 100%; margin: 0; }
   background: #ffe9b0;
 }
 
-/* Popup wie Bild 3 */
+/* Popup */
 .leaflet-popup-content-wrapper {
   background: #fff;
   color: #111;
@@ -128,6 +339,47 @@ html, body { height: 100%; margin: 0; }
 }
 .popup-source a { color: #1976d2; text-decoration: underline; }
 
+/* Slider im Popup */
+.popup-slider-container {
+  margin-top: 12px;
+  margin-bottom: 8px;
+}
+.popup-slider-label {
+  font-size: 14px;
+  color: #555;
+  margin-bottom: 6px;
+  font-weight: 500;
+}
+.popup-slider {
+  width: 100%;
+  height: 6px;
+  border-radius: 3px;
+  background: #ddd;
+  outline: none;
+  -webkit-appearance: none;
+  appearance: none;
+}
+.popup-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #C4A000;
+  cursor: pointer;
+  border: 2px solid #fff;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+}
+.popup-slider::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #C4A000;
+  cursor: pointer;
+  border: 2px solid #fff;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+}
+
 /* Cluster-Viereck */
 .stoneSquare {
   width: 46px;
@@ -144,16 +396,29 @@ html, body { height: 100%; margin: 0; }
   user-select: none;
 }
 
-/* Legende */
+/* Legende erweitert */
 .legend {
   position: absolute;
   bottom: 8px;
   right: 8px;
   background: #fffff0;
   border: 1px solid #C4A000;
-  padding: 4px 6px;
+  padding: 8px 10px;
   font-size: 12px;
   z-index: 999;
+  border-radius: 6px;
+}
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 4px 0;
+}
+.legend-color {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 1px solid #333;
 }
 a {
   color: #C4A000;

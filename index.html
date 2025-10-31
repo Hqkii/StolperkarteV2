@@ -64,93 +64,10 @@
       width: 100vw;
       display: block;
     }
-    .legend {
-      position: absolute;
-      bottom: 8px;
-      right: 8px;
-      background: #fffff0;
-      border: 1px solid #C4A000;
-      padding: 4px 6px;
-      font-size: 12px;
-      z-index: 999;
-    }
-    a {
-      color: #C4A000;
-      text-decoration: none;
-    }
-    /* Suchleiste Styling */
     .search-bar-container {
-      position: absolute;
-      top: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      z-index: 1200;
-      background: #fffff0e8;
-      border: 1px solid #C4A000;
-      border-radius: 8px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-      padding: 10px 18px;
-      display: flex;
-      align-items: center;
-      min-width: 280px;
-      max-width: 94vw;
-      width: 370px;
-      gap: 8px;
       display: none;
     }
     .search-bar-container.active { display: flex; }
-    .search-bar-input {
-      flex: 1;
-      font-size: 1em;
-      padding: 6px 10px;
-      border: 1px solid #C4A000;
-      border-radius: 5px;
-      outline: none;
-      background: #fff;
-    }
-    .search-bar-btn {
-      background: #C4A000;
-      color: #fff;
-      border: none;
-      border-radius: 5px;
-      padding: 7px 18px;
-      font-size: 1em;
-      font-weight: bold;
-      cursor: pointer;
-      transition: background 0.18s;
-    }
-    .search-bar-btn:hover {
-      background: #a87d00;
-    }
-    .search-bar-results {
-      position: absolute;
-      top: 46px;
-      left: 0;
-      right: 0;
-      background: #fffffa;
-      border: 1px solid #ccc;
-      border-top: none;
-      border-radius: 0 0 8px 8px;
-      max-height: 210px;
-      overflow-y: auto;
-      z-index: 1201;
-      box-shadow: 0 6px 16px rgba(0,0,0,0.07);
-      display: none;
-      font-size: 1em;
-    }
-    .search-bar-results.active { display: block; }
-    .search-bar-result {
-      padding: 8px 14px;
-      cursor: pointer;
-      border-bottom: 1px solid #eee;
-    }
-    .search-bar-result:last-child {
-      border-bottom: none;
-    }
-    .search-bar-result:hover,
-    .search-bar-result.active {
-      background: #ffe9b0;
-    }
   </style>
 </head>
 <body>
@@ -164,6 +81,80 @@
       <button onclick="showMap()">Zur Karte</button>
     </div>
   </div>
+  
+  <!-- Info-Button -->
+  <button class="info-button" id="infoBtn" style="display:none" onclick="showInfo()">ℹ️ Info</button>
+  
+  <!-- Info-Overlay -->
+  <div class="info-overlay" id="infoOverlay" style="display:none">
+    <div class="info-panel">
+      <button class="close-info" onclick="closeInfo()">×</button>
+      <h2>Informationen</h2>
+      <div class="info-tabs">
+        <button class="info-tab active" onclick="showTab('about')">Über uns</button>
+        <button class="info-tab" onclick="showTab('culture')">Erinnerungskultur</button>
+        <button class="info-tab" onclick="showTab('news')">News</button>
+        <button class="info-tab" onclick="showTab('contact')">Kontakt</button>
+        <button class="info-tab" onclick="showTab('impressum')">Impressum</button>
+        <button class="info-tab" onclick="showTab('datenschutz')">Datenschutz</button>
+      </div>
+      
+      <div class="info-content active" id="about">
+        <h3>Über das Projekt</h3>
+        <p>Diese Karte zeigt die Stolpersteine in Hamburg. Stolpersteine erinnern an die Opfer des Nationalsozialismus und werden vor deren letzten frei gewählten Wohnorten verlegt.</p>
+        <p>Mit dieser digitalen Karte möchten wir das Gedenken bewahren und zugänglich machen. Sie können nach Namen suchen, Informationen abrufen und zur Pflege der Stolpersteine beitragen.</p>
+      </div>
+      
+      <div class="info-content" id="culture">
+        <h3>Erinnerungskultur</h3>
+        <p>Stolpersteine sind ein Projekt des Künstlers Gunter Demnig. Seit 1992 erinnern die kleinen Messingtafeln an Menschen, die während der NS-Zeit verfolgt, ermordet, deportiert, vertrieben oder in den Suizid getrieben wurden.</p>
+        <p>Die Steine werden im Gehweg vor dem letzten frei gewählten Wohnort der Opfer eingelassen. Beim Stolpern – nicht physisch, sondern im Innehalten – erinnern wir uns an ihr Schicksal.</p>
+        <p><strong>Wie können Sie helfen?</strong> Durch regelmäßiges Reinigen der Stolpersteine bleiben die Namen und Daten lesbar. Nutzen Sie unsere Putz-Funktion, um Ihre Beiträge zu dokumentieren.</p>
+      </div>
+      
+      <div class="info-content" id="news">
+        <h3>Neuigkeiten</h3>
+        <p><strong>Oktober 2024:</strong> Neue Funktion hinzugefügt! Sie können jetzt dokumentieren, wann ein Stolperstein geputzt wurde, inklusive Foto-Upload.</p>
+        <p><strong>Farbsystem:</strong> Die Marker auf der Karte zeigen den Pflegezustand:<br>
+        🟢 Grün = innerhalb der letzten 30 Tage geputzt<br>
+        🟠 Orange = vor 30-90 Tagen geputzt<br>
+        🔴 Rot = länger als 90 Tage oder nie geputzt</p>
+      </div>
+      
+      <div class="info-content" id="contact">
+        <h3>Kontakt</h3>
+        <p>Haben Sie Fragen, Anregungen oder möchten Sie fehlende Informationen ergänzen?</p>
+        <p><strong>E-Mail:</strong> info@stolpersteine-hamburg.de</p>
+        <p><strong>Telefon:</strong> +49 (0)40 123456789</p>
+        <p>Wir freuen uns über Ihr Feedback und Ihre Unterstützung!</p>
+      </div>
+      
+      <div class="info-content" id="impressum">
+        <h3>Impressum</h3>
+        <p><strong>Verantwortlich für den Inhalt:</strong><br>
+        Stolpersteine Hamburg e.V.<br>
+        Musterstraße 123<br>
+        20095 Hamburg</p>
+        <p><strong>Vertreten durch:</strong><br>
+        Max Mustermann (Vorsitzender)</p>
+        <p><strong>Registereintrag:</strong><br>
+        Eingetragen im Vereinsregister Hamburg<br>
+        Registernummer: VR 12345</p>
+      </div>
+      
+      <div class="info-content" id="datenschutz">
+        <h3>Datenschutzerklärung</h3>
+        <p><strong>Datenerfassung auf dieser Website:</strong></p>
+        <p>Diese Website speichert Daten über gereinigte Stolpersteine (Datum, Kommentar, Fotos) in Ihrem Browser-Speicher. Diese Daten bleiben lokal auf Ihrem Gerät.</p>
+        <p><strong>Externe Dienste:</strong><br>
+        - OpenStreetMap (Kartenmaterial)<br>
+        - Overpass API (Stolperstein-Daten)<br>
+        - Leaflet.js (Kartenbibliothek)</p>
+        <p>Wir erheben keine personenbezogenen Daten und setzen keine Tracking-Cookies ein.</p>
+      </div>
+    </div>
+  </div>
+  
   <!-- Suchleiste -->
   <div class="search-bar-container" id="searchBar">
     <input
@@ -178,21 +169,38 @@
     <button class="search-bar-btn" onclick="window.searchBarSubmit && window.searchBarSubmit()">Suchen</button>
     <div class="search-bar-results" id="searchResults"></div>
   </div>
+  
   <div id="map" style="display:none"></div>
+  
   <div class="legend" style="display:none" id="legend">
-    © OpenStreetMap / OverpassAPI & eigene Daten<br />
+    <strong>Pflegezustand:</strong>
+    <div class="legend-item">
+      <div class="legend-color" style="background:#0a0"></div>
+      <span>< 30 Tage</span>
+    </div>
+    <div class="legend-item">
+      <div class="legend-color" style="background:#fa0"></div>
+      <span>30-90 Tage</span>
+    </div>
+    <div class="legend-item">
+      <div class="legend-color" style="background:#d00"></div>
+      <span>> 90 Tage / nie</span>
+    </div>
+    <hr style="margin: 8px 0; border: none; border-top: 1px solid #ccc;">
+    © OpenStreetMap / OverpassAPI<br />
     <a href="https://de.wikipedia.org/wiki/Liste_der_Stolpersteine_in_Hamburg" target="_blank">Wikipedia-Liste</a>
   </div>
+  
   <script>
     function showMap() {
       document.getElementById('intro').style.display = 'none';
       document.getElementById('map').style.display = '';
       document.getElementById('legend').style.display = '';
       document.getElementById('searchBar').classList.add('active');
-      // Map initialisieren, falls noch nicht geschehen
+      document.getElementById('infoBtn').style.display = '';
+      
       if (!window._mapLoaded) {
         window._mapLoaded = true;
-        // Leaflet und MarkerCluster laden
         var leaflet = document.createElement('script');
         leaflet.src = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.js";
         leaflet.onload = function() {
@@ -207,6 +215,24 @@
         };
         document.body.appendChild(leaflet);
       }
+    }
+    
+    function showInfo() {
+      document.getElementById('infoOverlay').style.display = 'flex';
+    }
+    
+    function closeInfo() {
+      document.getElementById('infoOverlay').style.display = 'none';
+    }
+    
+    function showTab(tabName) {
+      // Alle Tabs und Inhalte deaktivieren
+      document.querySelectorAll('.info-tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.info-content').forEach(c => c.classList.remove('active'));
+      
+      // Gewählten Tab aktivieren
+      event.target.classList.add('active');
+      document.getElementById(tabName).classList.add('active');
     }
   </script>
   <script src="search.js"></script>
